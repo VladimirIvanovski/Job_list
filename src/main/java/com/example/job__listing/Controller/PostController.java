@@ -1,24 +1,26 @@
-package com.example.job__listing;
+package com.example.job__listing.Controller;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.job__listing.Models.Post;
+import com.example.job__listing.repository.PostRepository;
+import com.example.job__listing.repository.SearchRepository;
+import com.example.job__listing.repository.SearchRrepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 
 @RestController
-public class SwaggerConfig {
+public class PostController {
+
+    @Autowired
+    SearchRrepo srepo;
+
+    @Autowired
+    PostRepository repo;
 
     @ApiIgnore
     @RequestMapping("/")
@@ -26,5 +28,22 @@ public class SwaggerConfig {
         response.sendRedirect("/swagger-ui.html");
     }
 
-    public List<Post>
+
+    @PostMapping("/postJob")
+    public Post addPost(@RequestBody Post post)
+    {
+        return repo.save(post);
+    }
+
+    @GetMapping("/allPosts")
+    public List<Post> getAllposts()
+    {
+        return repo.findAll();
+    }
+
+    @GetMapping("/posts/{text2}")
+    public List<Post> search(@PathVariable String text2)
+    {
+        return srepo.findByText(text2);
+    }
 }
